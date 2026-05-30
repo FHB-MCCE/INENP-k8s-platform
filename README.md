@@ -128,3 +128,31 @@ Rules:
 - use reviews before merging
 - keep documentation updated with implementation changes
 
+Example commit message:
+
+```text
+docs(platform): add initial project overview (#2)
+```
+
+## Current Status
+
+The project is currently in the initial planning and bootstrap phase.
+
+Open high-priority items:
+
+- request GCP credits based on the capacity planning issue
+- clarify domain and DNS delegation
+- clarify whether verified pull requests require signed commits
+- initialize all repositories
+- set up branch protection and required pull request checks
+- start Day 1 infrastructure bootstrap
+
+## Deadline
+
+The submission deadline is:
+
+```text
+Friday, 26 June 2026, 14:00 CEST
+```
+
+No changes should be made after the deadline.
