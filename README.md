@@ -86,6 +86,8 @@ Planned Day 1 tasks include:
 - configuring access for the lecturer
 - documenting all required manual steps and exceptions
 
+The current DNS and Secret Manager foundation is documented in [DNS And Secret Manager Foundation](docs/dns-and-secrets.md).
+
 After Day 1, the platform should exist and be ready to manage application resources declaratively.
 
 ## Day 2: Tenant Provisioning
