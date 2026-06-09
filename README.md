@@ -88,6 +88,8 @@ Planned Day 1 tasks include:
 
 The current DNS and Secret Manager foundation is documented in [DNS And Secret Manager Foundation](docs/dns-and-secrets.md).
 
+AI-assisted planning and implementation support is documented in [AI Usage](docs/ai-usage.md).
+
 After Day 1, the platform should exist and be ready to manage application resources declaratively.
 
 ## Day 2: Tenant Provisioning
