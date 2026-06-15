@@ -1,0 +1,50 @@
+name: Validate Platform Docs
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Documentation Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required documents
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            README.md
+            CONTRIBUTING.md
+            docs/ai-usage.md
+            docs/dns-and-secrets.md
+          )
+
+          for file in "${required_files[@]}"; do
+            test -s "$file"
+          done
+
+      - name: Validate Markdown structure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          while IFS= read -r file; do
+            if ! grep -Eq '^# ' "$file"; then
+              echo "$file is missing a top-level heading"
+              exit 1
+            fi
+
+            if grep -n '[[:blank:]]$' "$file"; then
+              echo "$file contains trailing whitespace"
+              exit 1
+            fi
+          done < <(find . -name '*.md' -not -path './.git/*' | sort)
