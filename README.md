@@ -140,17 +140,24 @@ docs(platform): add initial project overview (#2)
 
 ## Current Status
 
-The project is currently in the initial planning and bootstrap phase.
+Gate 6 is technically complete and Gate 7 is the documentation and demo freeze. Demo and staging run in GKE, Argo CD reports the tenant frontend and backend applications as healthy, TLS certificates are ready and the public HTTPS endpoints respond.
 
-Open high-priority items:
+Reference endpoints:
 
-- request GCP credits based on the capacity planning issue
-- clarify domain and DNS delegation
-- clarify whether verified pull requests require signed commits
-- initialize all repositories
-- set up branch protection and required pull request checks
-- start Day 1 infrastructure bootstrap
+| Tenant | Frontend | Backend Health |
+|---|---|---|
+| Demo | `https://demo.inenp.naehrer.me/` | `https://api.demo.inenp.naehrer.me/actuator/health` |
+| Staging | `https://staging.inenp.naehrer.me/` | `https://api.staging.inenp.naehrer.me/actuator/health` |
 
+Gate-7 documentation:
+
+- [E2E Tenant Provisioning Runbook](docs/e2e-tenant-runbook.md)
+- [Cost Tracking and Deviation Analysis](docs/cost-tracking.md)
+- [Tenant Contribution Guide](docs/tenant-contribution-guide.md)
+- [Presentation Outline](docs/presentation-outline.md)
+- [Quality and Security Audit](docs/quality-security-audit.md)
+- [DNS and Secret Manager Foundation](docs/dns-and-secrets.md)
+- [AI Usage](docs/ai-usage.md)
 ## Deadline
 
 The submission deadline is:
