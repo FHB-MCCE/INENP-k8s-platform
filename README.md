@@ -1,169 +1,202 @@
 # INENP Kubernetes Platform
 
-This repository is the central entry point for the INENP Kubernetes platform project.
+Dieses Repository ist der zentrale Einstiegspunkt für das Projekt
+**INENP Kubernetes Platform**.
 
-The goal of this project is to build and document a Kubernetes-based platform on Google Cloud Platform. The platform provisions its infrastructure with Infrastructure as Code, deploys platform and application resources through GitOps, and allows tenant-specific application instances to be created declaratively.
+Ziel des Projekts ist eine Kubernetes-basierte Plattform auf Google Cloud
+Platform. Die Infrastruktur wird mit Terraform bereitgestellt, Plattform- und
+Anwendungsressourcen werden über GitOps synchronisiert, und tenant-spezifische
+App-Instanzen werden deklarativ über Crossplane erzeugt.
 
-## Project Goal
+## Projektziel
 
-The platform will provide a reproducible setup for running a tenant-based 3-tier application on Kubernetes.
+Die Plattform stellt eine reproduzierbare Umgebung für eine tenant-basierte
+3-Tier-Anwendung auf Kubernetes bereit.
 
-Each tenant should receive an isolated application instance consisting of:
+Jeder Tenant erhält eine isolierte Anwendungsinstanz mit:
 
-- a frontend
-- a backend API
-- a database
-- a dedicated Kubernetes namespace
-- tenant-specific configuration and secrets
-- DNS and HTTPS endpoints
-- resource and network isolation
+- Frontend,
+- Backend API,
+- Datenbank,
+- eigenem Kubernetes-Namespace,
+- tenant-spezifischer Konfiguration und Secrets,
+- DNS- und HTTPS-Endpunkten,
+- Ressourcen- und Netzwerkisolation.
 
-The final demo should show how a new tenant can be created through GitOps and how the platform automatically provisions the required resources.
+Die Demo zeigt, wie ein neuer Tenant durch einen GitOps-Claim angelegt wird und
+wie Argo CD, Crossplane und die Plattform-Operatoren danach automatisch die
+benötigten Ressourcen bereitstellen.
 
-## Repository Overview
+## Repositories
 
-| Repository | Visibility | Purpose |
+| Repository | Sichtbarkeit | Zweck |
 |---|---|---|
-| `INENP-k8s-platform` | Public | Central documentation, project overview, planning, cost tracking and demo runbook |
-| `INENP-k8s-platform-iac` | Public | Terraform code for GCP, GKE, IAM, DNS, Secret Manager and platform access |
-| `INENP-k8s-platform-gitops` | Public | GitOps configuration, Argo CD applications, platform components, Crossplane resources and tenant claims |
-| `INENP-k8s-platform-backend` | Public | Backend application, Docker image build, GHCR publishing and Helm chart |
-| `INENP-k8s-platform-frontend` | Private | Frontend application, private Docker image build, GHCR publishing and Helm chart |
+| `INENP-k8s-platform` | öffentlich | zentrale Dokumentation, Projektübersicht, Projektplan, Kosten, Runbooks und Präsentation |
+| `INENP-k8s-platform-iac` | öffentlich | Terraform für GCP, GKE, IAM, DNS, Secret Manager und Plattformzugriff |
+| `INENP-k8s-platform-gitops` | öffentlich | GitOps-Konfiguration, Argo-CD-Applications, Plattform-Komponenten, Crossplane-Ressourcen und Tenant Claims |
+| `INENP-k8s-platform-backend` | öffentlich | Backend-Anwendung, Docker Image, GHCR Publishing und Helm Chart |
+| `INENP-k8s-platform-frontend` | privat | Frontend-Anwendung, privates Docker Image, GHCR Publishing und Helm Chart |
 
-## Architecture Overview
+## Architekturüberblick
 
-The platform is split into two major phases: Day 1 platform bootstrap and Day 2 tenant provisioning.
+Die Plattform ist in zwei Phasen getrennt: Day 1 Plattform-Bootstrap und Day 2
+Tenant-Provisioning.
 
-Day 1 creates and configures the base platform:
+Day 1 erstellt die Basisplattform:
 
-- Google Cloud infrastructure
-- GKE cluster
-- IAM and Workload Identity
-- Cloud DNS zone
-- Google Secret Manager
-- Argo CD
-- platform operators such as cert-manager, ExternalDNS, External Secrets Operator, Crossplane and CloudNativePG
+- Google-Cloud-Infrastruktur,
+- GKE Cluster,
+- IAM und Workload Identity,
+- Cloud DNS Zone,
+- Google Secret Manager,
+- Argo CD,
+- Plattform-Operatoren wie cert-manager, ExternalDNS, External Secrets
+  Operator, Crossplane und CloudNativePG.
 
-Day 2 uses the platform to create and operate tenant-specific application instances:
+Day 2 verwendet diese Plattform für tenant-spezifische Anwendungsinstanzen:
 
-- tenant claims are committed to the GitOps repository
-- Argo CD synchronizes the desired state to the cluster
-- Crossplane creates the required Kubernetes resources
-- CloudNativePG provides tenant-specific database resources
-- Helm charts deploy backend and frontend
-- External Secrets Operator injects required secrets
-- ExternalDNS creates DNS records
-- cert-manager issues HTTPS certificates
+- Tenant Claims werden in das GitOps-Repository committed,
+- Argo CD synchronisiert den gewünschten Zustand in den Cluster,
+- Crossplane erzeugt die benötigten Kubernetes-Ressourcen,
+- CloudNativePG stellt tenant-spezifische Datenbanken bereit,
+- Helm Charts deployen Backend und Frontend,
+- External Secrets Operator stellt Secrets aus Google Secret Manager bereit,
+- ExternalDNS erzeugt DNS-Einträge,
+- cert-manager stellt öffentliche HTTPS-Zertifikate aus.
 
-## Technology Stack
+## Tech-Stack
 
-| Area | Technology |
+| Bereich | Technologie |
 |---|---|
 | Cloud Provider | Google Cloud Platform |
 | Kubernetes | GKE Standard |
 | Infrastructure as Code | Terraform |
 | GitOps | Argo CD |
-| Tenant Provisioning | Crossplane |
-| Secrets Management | External Secrets Operator + Google Secret Manager |
-| DNS Management | ExternalDNS + Cloud DNS |
-| TLS Certificates | cert-manager + Let's Encrypt DNS-01 |
-| Database | CloudNativePG |
+| Tenant-Provisioning | Crossplane |
+| Secret Management | External Secrets Operator + Google Secret Manager |
+| DNS-Management | ExternalDNS + Cloud DNS |
+| TLS-Zertifikate | cert-manager + Let's Encrypt DNS-01 |
+| Datenbank | CloudNativePG |
 | Container Registry | GitHub Container Registry |
-| Application Deployment | Helm charts |
+| Anwendungsdeployment | Helm Charts |
 | CI/CD | GitHub Actions |
 
-## Day 1: Platform Bootstrap
+## Projektplanung und Gates
 
-Day 1 is responsible for creating the platform foundation.
+Der ursprüngliche Projektplan wurde mit dem tatsächlichen Umsetzungsstand
+abgeglichen und als Markdown-Dokument in diesem Repository abgelegt:
 
-Planned Day 1 tasks include:
+- [Projektplan und Gate-Abgleich](docs/project-plan-gates.md)
 
-- provisioning GCP and GKE resources with Terraform
-- configuring IAM, service accounts and Workload Identity
-- creating the DNS zone and Secret Manager resources
-- bootstrapping Argo CD
-- deploying platform operators through GitOps
-- configuring access for the lecturer
-- documenting all required manual steps and exceptions
+Der Plan dokumentiert Gate 0 bis Gate 7, die wichtigsten Nachweise, bewusste
+Abweichungen und die abschließende Einordnung der Teamverteilung.
 
-The current DNS and Secret Manager foundation is documented in [DNS And Secret Manager Foundation](docs/dns-and-secrets.md).
+## Day 1: Plattform-Bootstrap
 
-AI-assisted planning and implementation support is documented in [AI Usage](docs/ai-usage.md).
+Day 1 erzeugt die Plattformgrundlage.
 
-After Day 1, the platform should exist and be ready to manage application resources declaratively.
+Umgesetzte Bestandteile:
 
-## Day 2: Tenant Provisioning
+- GCP- und GKE-Ressourcen mit Terraform,
+- IAM, Service Accounts, OIDC und Workload Identity,
+- DNS-Zone und Secret-Manager-Container,
+- Argo-CD-Bootstrap,
+- Plattform-Operatoren über GitOps,
+- Lecturer-Zugangsprozess,
+- dokumentierte Ausnahmen wie DNS-Delegation und manuell bereitzustellende
+  Secret-Werte.
 
-Day 2 is responsible for using the platform to create tenant-specific application instances.
+Die DNS- und Secret-Manager-Grundlage ist dokumentiert unter
+[DNS und Secret Manager Foundation](docs/dns-and-secrets.md).
 
-Planned Day 2 tasks include:
+## Day 2: Tenant-Provisioning
 
-- defining a `TenantApplication` Crossplane API
-- creating tenant claims through GitOps
-- provisioning one namespace per tenant
-- provisioning tenant-specific database resources
-- deploying backend and frontend through Helm
-- configuring DNS and HTTPS endpoints
-- applying NetworkPolicies, ResourceQuotas and LimitRanges
-- supporting application updates through a staging tenant first
+Day 2 erzeugt und betreibt tenant-spezifische Anwendungsinstanzen.
 
-After Day 2, a new tenant should be created by committing a tenant claim to the GitOps repository.
+Umgesetzte Bestandteile:
 
-## Capacity and Cost Planning
+- `TenantApplication` Crossplane API,
+- Tenant Claims über GitOps,
+- ein Namespace pro Tenant,
+- tenant-spezifische Datenbankressourcen,
+- Backend und Frontend über Helm,
+- DNS- und HTTPS-Endpunkte,
+- NetworkPolicies, ResourceQuotas und LimitRanges,
+- Update-Pfad zuerst über Staging, danach Demo/Prod.
 
-Capacity and cost planning is tracked in the project issue:
+Ein neuer Tenant wird durch einen `TenantApplication` Claim im GitOps-Repository
+angelegt. Nach dem Merge synchronisiert Argo CD automatisch, und Crossplane
+erstellt die benötigten Ressourcen.
 
-- Capacity and Cost Planning: #1
+## Kapazitäts- und Kostenplanung
 
-The plan currently targets a cost-conscious GKE Standard setup on Google Cloud Platform. Actual costs will be tracked during the project and compared against the initial estimate before submission.
+Kapazitäts- und Kostenplanung werden im zentralen GitHub Issue gepflegt:
 
-## Contribution Workflow
+- [Capacity & Cost Planning #1](https://github.com/FHB-MCCE/INENP-k8s-platform/issues/1)
 
-All project work should be traceable through GitHub.
+Die Plattform nutzt ein kostenbewusstes GKE-Standard-Setup. Die ursprüngliche
+Monatsplanung wurde mit den tatsächlichen GCP-Kosten verglichen. Die realen
+Kosten liegen unter der Planung, hauptsächlich wegen kürzerer aktiver Laufzeit,
+CloudNativePG im Cluster statt Cloud SQL und geringer Netzwerk-/DNS-/Secret-
+Manager-Nutzung.
 
-Rules:
+Weitere Details stehen in [Kostenstand und Abweichungsanalyse](docs/cost-tracking.md).
 
-- create a GitHub issue for every relevant change
-- create a feature branch for each issue
-- open a pull request for every change
-- use Conventional Commits
-- reference the related issue in commits and pull requests
-- avoid merge commits
-- use reviews before merging
-- keep documentation updated with implementation changes
+## Beitragsworkflow
 
-Example commit message:
+Alle Arbeiten sind über GitHub nachvollziehbar.
+
+Regeln:
+
+- für relevante Änderungen ein GitHub Issue anlegen,
+- pro Issue oder eng geschnittenem Teil ein Feature-Branch,
+- jede Änderung über Pull Request nach `main`,
+- Conventional Commits verwenden,
+- Commit und PR mit der passenden Issue-Nummer referenzieren,
+- keine Merge Commits,
+- Reviews vor dem Merge,
+- Dokumentation bei Implementierungsänderungen aktuell halten.
+
+Beispiel:
 
 ```text
-docs(platform): add initial project overview (#2)
+docs(platform): add final gate project plan (#26)
 ```
 
-## Current Status
+## Aktueller Stand
 
-Gate 6 is technically complete and Gate 7 is the documentation and demo freeze. Demo and staging run in GKE, Argo CD reports the tenant frontend and backend applications as healthy, TLS certificates are ready and the public HTTPS endpoints respond.
+Die Plattform ist für die Abgabe vorbereitet. GKE, Argo CD, Crossplane,
+ExternalDNS, cert-manager, External Secrets Operator, CloudNativePG, Backend und
+Frontend sind in den Runbooks und Nachweisen dokumentiert.
 
-Reference endpoints:
+Referenzendpunkte:
 
 | Tenant | Frontend | Backend Health |
 |---|---|---|
 | Demo | `https://demo.inenp.naehrer.me/` | `https://api.demo.inenp.naehrer.me/actuator/health` |
 | Staging | `https://staging.inenp.naehrer.me/` | `https://api.staging.inenp.naehrer.me/actuator/health` |
+| Prod | `https://prod.inenp.naehrer.me/` | `https://api.prod.inenp.naehrer.me/actuator/health` |
 
-Gate-7 documentation:
+Der zusätzliche Prod-Tenant wurde über einen GitOps-PR angelegt und dient als
+weiterer Nachweis für deklaratives Tenant-Provisioning.
 
+## Wichtige Dokumentation
+
+- [Projektplan und Gate-Abgleich](docs/project-plan-gates.md)
 - [E2E Tenant Provisioning Runbook](docs/e2e-tenant-runbook.md)
-- [Cost Tracking and Deviation Analysis](docs/cost-tracking.md)
-- [Tenant Contribution Guide](docs/tenant-contribution-guide.md)
-- [Presentation Outline](docs/presentation-outline.md)
-- [Quality and Security Audit](docs/quality-security-audit.md)
-- [DNS and Secret Manager Foundation](docs/dns-and-secrets.md)
-- [AI Usage](docs/ai-usage.md)
+- [Kostenstand und Abweichungsanalyse](docs/cost-tracking.md)
+- [Tenant Contribution Guide / Anleitung für neue Tenants](docs/tenant-contribution-guide.md)
+- [Präsentationsübersicht](docs/presentation-outline.md)
+- [Qualitäts- und Sicherheitsaudit](docs/quality-security-audit.md)
+- [DNS und Secret Manager Foundation](docs/dns-and-secrets.md)
+- [KI-Nutzung](docs/ai-usage.md)
+
 ## Deadline
 
-The submission deadline is:
+Die Abgabefrist ist:
 
 ```text
-Friday, 26 June 2026, 14:00 CEST
+Freitag, 26. Juni 2026, 14:00 CEST
 ```
 
-No changes should be made after the deadline.
+Nach der Deadline sollen keine Änderungen mehr vorgenommen werden.
